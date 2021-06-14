@@ -153,7 +153,7 @@ class Regex(object):
                 # apply 'all' to all other languages
                 if match_language == "all":
                     for language in languages:
-                        if language is not "all":
+                        if language != "all":
                             self.keywords[language].append((keyword_no_boundary, keyword_re_escaped))
 
         # Sort keywords by length and alphabetically to make search behaviour well defined

@@ -133,6 +133,13 @@ class Language(object):
         is_source_code = True
         extensions = ["p"]
 
+    class Go(metaclass=LanguageType):
+        string_repr = "go"
+        is_text = True
+        is_binary = False
+        is_source_code = True
+        extensions = ["go"]        
+
     @staticmethod
     def language_list():
         return [getattr(Language, attr) for attr in Language.__dict__.keys() \
