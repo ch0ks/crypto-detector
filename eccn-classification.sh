@@ -9,7 +9,7 @@
 # bash_version   :GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin18)
 #==================================================================
 
-set -xeuo pipefail
+set -euo pipefail
 #trap cleanup SIGINT SIGTERM ERR EXIT
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
@@ -76,6 +76,7 @@ parse_params() {
 }
 
 parse_params "$@"
+reponame=$(echo ${1} | sed 's/^.*://g;s/\.git$//g')
 repo=${1}
 outputdir=${repo}-out
 tmpdir=$(mktemp -d -t eccn-XXXXXXXXXX)
@@ -111,6 +112,7 @@ then
     repo=${repo1}
 fi
 
+msg "Scanning for crypto"
 for method in eccnstep1
 do
     ./scan-for-crypto.py  --output  ${outputdir} \
@@ -128,4 +130,11 @@ msg "$(ls -1 ${outputdir} | sed 's/^/\t* /g')"
 ./reporting/translate_to_csv.py -o ${outputdir} ${outputdir}/*
 repo=$(echo ${repo} | sed 's/.*\///g')
 cat ${outputdir}/*.csv > ${outputdir}/${repo}-FINAL.csv
+NUMLINES=$(wc -l ${outputdir}/${repo}-FINAL.csv | cut -f1 -d" ")
+if [ ${NUMLINES} -eq 1 ]
+then
+  msg "==]> Repo ${reponame} aparently has no crypto, review in detail."
+else
+  msg "==]> Repo ${reponame} contains ${NUMLINES} matches for crypto."
+fi
 msg "Final report in ${outputdir}/${repo}-FINAL.csv"
