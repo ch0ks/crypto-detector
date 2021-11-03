@@ -23,7 +23,7 @@ import csv
 
 class CryptoReadError(Exception): pass
 
-def process_files():
+def process_files(new_file_name):
     try:
         parser = argparse.ArgumentParser(
             description="Utility to translate .crypto reports to CSV format")
@@ -31,7 +31,6 @@ def process_files():
         parser.add_argument("-o", "--output", \
            dest="output", default=os.getcwd(), \
            help="The output directory")
-
         parser.add_argument("crypto_files", nargs='+')
 
         parsed_args = vars(parser.parse_args())
@@ -49,7 +48,6 @@ def process_files():
             filename = os.path.basename(crypto_file_path)
 
             print("Processing " + filename + " ...")
-
             try:
                 with open(crypto_file_path, 'r') as crypto_file:
                     crypto_data = json.loads(crypto_file.read())
@@ -61,8 +59,7 @@ def process_files():
                     + ". Missing 'crypto_evidence' field ")
                 continue
 
-            csv_filename = os.path.join(output_directory, filename + ".csv")
-
+            csv_filename = os.path.join(output_directory, new_file_name + ".csv")
             try:
                 with open(csv_filename, 'w') as file:
                     writer = csv.writer(file)
