@@ -29,9 +29,16 @@ from cryptodetector.cryptodetector import CryptoDetector
 #  Dynamically import all the methods
 #
 ROOT_DIR = join(dirname(realpath(__file__)), "methods")
+print("ROOT_DIR::", ROOT_DIR)
 for method in listdir(ROOT_DIR):
-    for method_module in listdir(join(ROOT_DIR, method)):
-        if not method_module.endswith(".py"):
-            continue
-        module_path = ".".join(["cryptodetector", "methods", method, method_module[:-3]])
-        __import__(module_path)
+    try:
+        for method_module in listdir(join(ROOT_DIR, method)):
+            try:
+                if not method_module.endswith(".py"):
+                    continue
+                module_path = ".".join(["cryptodetector", "methods", method, method_module[:-3]])
+                __import__(module_path)
+            except Exception as exe:
+                print("Exception in cryptodetector methods:",exe)
+    except Exception as e:
+        print("Exception in cryptodetector methods:",e)
